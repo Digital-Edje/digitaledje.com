@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#0c0d0f">
+<title>QE Agent Pre-Install Survey</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Syne:wght@500;600;700;800&display=swap">
+<style>
+/* Layout: same dark theme as digitaledje.com. A sticky progress rail, one survey section per screen, Back / Next at the foot. */
+:root{
+  --bg:#0c0d0f; --fg:#f2f0ea; --card:#141518; --muted:#9a9b97; --subtle:#6e6f6c;
+  --primary:#d8d6cf; --primary-fg:#0c0d0f; --border:#2a2b2e; --warn:#e3b66b;
+  --shadow:0 0 0 1px rgb(242 240 234 / 0.08); --shadow-hover:0 0 0 1px rgb(242 240 234 / 0.14);
+  --display:"Syne",ui-sans-serif,system-ui,sans-serif;
+  --sans:"Source Sans 3",ui-sans-serif,system-ui,sans-serif;
+  --gutter-l:max(20px, env(safe-area-inset-left, 0px)); --gutter-r:max(20px, env(safe-area-inset-right, 0px));
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-font-smoothing:antialiased; background:var(--bg); color:var(--fg); padding-top:env(safe-area-inset-top, 0px); padding-bottom:env(safe-area-inset-bottom, 0px)}
+body{margin:0; background:var(--bg); color:var(--fg); font-family:var(--sans); font-size:16px; line-height:1.6}
+a{color:inherit}
+p{margin:0}
+h1,h2,h3{margin:0; text-wrap:balance; font-family:var(--display); font-weight:600; letter-spacing:-.03em}
+:focus-visible{outline:2px solid var(--primary); outline-offset:3px}
+[hidden]{display:none!important}
+img{max-width:100%}
+.wrap{max-width:52rem; margin:0 auto; padding-left:var(--gutter-l); padding-right:var(--gutter-r)}
+@media (min-width:640px){ :root{--gutter-l:max(32px, env(safe-area-inset-left, 0px)); --gutter-r:max(32px, env(safe-area-inset-right, 0px))} }
+.kicker{font-family:var(--display); font-size:.75rem; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:var(--muted)}
+
+body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top, 0px); z-index:50; background:var(--bg)}
+header.site{position:sticky; top:env(safe-area-inset-top, 0px); z-index:40; border-bottom:1px solid rgb(42 43 46 / .8); background:rgb(12 13 15 / .88); backdrop-filter:blur(12px)}
+.bar{max-width:72rem; margin:0 auto; padding-left:var(--gutter-l); padding-right:var(--gutter-r); height:4.25rem; display:flex; align-items:center; justify-content:space-between; gap:1rem}
+.brand{display:inline-flex; align-items:center; gap:.6rem; text-decoration:none; font-family:var(--display); font-size:.95rem; font-weight:600; letter-spacing:.14em; white-space:nowrap}
+.brand svg{width:1.75rem; height:1.75rem; display:block}
+.back{font-size:.9rem; color:var(--muted); text-decoration:none}
+.back:hover{color:var(--fg)}
+.progress{max-width:72rem; margin:0 auto; padding-left:var(--gutter-l); padding-right:var(--gutter-r); padding-block:.6rem .8rem; display:grid; gap:.45rem}
+.prog-meta{display:flex; justify-content:space-between; gap:1rem; font-size:.82rem; color:var(--muted); flex-wrap:wrap}
+.prog-track{height:4px; background:var(--border); border-radius:4px; overflow:hidden}
+.prog-fill{height:100%; width:0; background:var(--primary); transition:width .3s ease}
+.dots{display:flex; gap:4px}
+.dots button{flex:1; height:6px; border:0; padding:0; border-radius:3px; background:var(--border); cursor:pointer}
+.dots button.done{background:var(--subtle)}
+.dots button.current{background:var(--primary)}
+
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:.5rem; min-height:2.75rem; padding:0 1.25rem; border-radius:.625rem; border:0; cursor:pointer; text-decoration:none; font-family:var(--sans); font-size:.95rem; font-weight:500; background:var(--primary); color:var(--primary-fg); transition:opacity 150ms ease, transform 150ms ease}
+.btn:hover{opacity:.9}
+.btn:active{transform:scale(.96)}
+.btn-outline{background:transparent; color:var(--fg); box-shadow:var(--shadow)}
+.btn-quiet{background:transparent; color:var(--muted); padding:0 .5rem}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+
+.intro{padding-block:3rem 1rem; display:grid; gap:1rem}
+.intro h1{font-size:clamp(2rem, 5vw, 2.75rem); line-height:1.1}
+.intro p{color:var(--muted); max-width:40rem}
+.facts{display:flex; flex-wrap:wrap; gap:.5rem 1.5rem; font-size:.9rem; color:var(--muted)}
+.facts b{color:var(--fg); font-weight:600}
+.resume{display:flex; flex-wrap:wrap; align-items:center; gap:.75rem 1rem; padding:1rem 1.25rem; border-radius:1rem; box-shadow:var(--shadow-hover); font-size:.95rem}
+.resume p{flex:1 1 16rem; min-width:0}
+
+main{padding-bottom:4rem}
+.section-card{margin-top:1.5rem; background:var(--card); box-shadow:var(--shadow); border-radius:1rem; padding:2rem; display:grid; gap:1.75rem}
+.sec-top{display:grid; gap:.6rem}
+.sec-top h2{font-size:clamp(1.5rem, 4vw, 1.9rem); line-height:1.15}
+.sec-top p{color:var(--muted)}
+.field{display:grid; gap:.5rem; min-width:0}
+.field + .field{border-top:1px solid var(--border); padding-top:1.5rem}
+.qlabel{font-weight:600; font-size:1rem; display:flex; flex-wrap:wrap; gap:.4rem .6rem; align-items:baseline}
+.badge{font-family:var(--display); font-size:.62rem; font-weight:600; letter-spacing:.16em; text-transform:uppercase; padding:2px 7px; border-radius:5px; box-shadow:var(--shadow-hover); color:var(--muted)}
+.badge.must{color:var(--fg)}
+.help{font-size:.9rem; color:var(--muted)}
+input[type=text], input[type=email], input[type=tel], input[type=number], select, textarea{font:inherit; font-size:.98rem; color:var(--fg); background:var(--bg); border:1px solid var(--border); border-radius:.625rem; padding:.65rem .8rem; width:100%}
+input::placeholder, textarea::placeholder{color:var(--subtle)}
+textarea{min-height:5.5rem; resize:vertical}
+.opts{display:grid; grid-template-columns:repeat(auto-fill, minmax(14rem, 1fr)); gap:.5rem}
+.opt{display:flex; gap:.6rem; align-items:flex-start; padding:.6rem .8rem; border-radius:.625rem; box-shadow:var(--shadow); cursor:pointer; font-size:.95rem; min-width:0}
+.opt:hover{box-shadow:var(--shadow-hover)}
+.opt input{margin-top:5px; accent-color:var(--primary); flex:none}
+.opt:has(input:checked){box-shadow:0 0 0 1.5px var(--primary)}
+.other-box{margin-top:.25rem}
+.err{font-size:.88rem; color:var(--warn)}
+.hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden}
+#send-error{margin-top:1rem}
+.field.invalid input, .field.invalid select, .field.invalid textarea{border-color:var(--warn)}
+.field.invalid .opts .opt{box-shadow:0 0 0 1px var(--warn)}
+.notice{padding:1rem 1.25rem; border-radius:.75rem; box-shadow:var(--shadow-hover); font-size:.95rem; color:var(--muted)}
+.notice b{color:var(--fg)}
+.nav-row{margin-top:1.5rem; display:flex; justify-content:space-between; gap:.75rem; flex-wrap:wrap; align-items:center}
+.nav-row .right{display:flex; gap:.75rem; flex-wrap:wrap; align-items:center}
+.saved{font-size:.85rem; color:var(--subtle)}
+.email-box{display:grid; gap:.75rem}
+.email-box textarea{width:100%; font:inherit; font-size:.85rem; color:var(--fg); background:var(--bg); border:1px solid var(--border); border-radius:.625rem; padding:.75rem}
+.email-actions{display:flex; gap:.6rem; flex-wrap:wrap}
+.done-card{margin-top:1.5rem; background:var(--card); box-shadow:var(--shadow); border-radius:1rem; padding:2rem; display:grid; gap:1rem}
+.summary{display:grid; gap:.35rem; font-size:.92rem; color:var(--muted)}
+footer{border-top:1px solid var(--border); padding-block:1.5rem 2.5rem; font-size:.82rem; color:var(--subtle)}
+@media (max-width:640px){ .section-card, .done-card{padding:1.4rem} .intro{padding-top:2rem} }
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="bar">
+    <a class="brand" href="index.html" aria-label="DIGITAL EDJE home">
+      <svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M3.5 28 15.2 4h4.2L7.7 28H3.5Z" /><path d="M13.2 28 24.9 4h3.6L16.8 28h-3.6Z" opacity="0.42" /></svg>
+      DIGITAL EDJE
+    </a>
+    <a class="back" href="index.html#support">Back to Support</a>
+  </div>
+  <div class="progress" id="progress" hidden>
+    <div class="prog-meta"><span id="prog-section">Section 1 of 9</span><span id="prog-count">0 of 0 required answered</span></div>
+    <div class="dots" id="dots" aria-label="Survey sections"></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="intro" id="intro">
+    <p class="kicker">Support · Install planning</p>
+    <h1 id="form-title">QE Agent Pre-Install Survey</h1>
+    <p id="form-desc"></p>
+    <div class="facts">
+      <span><b id="fact-q">95</b> questions in <b id="fact-s">9</b> short sections</span>
+      <span><b>About 20 minutes</b> with your IT contact</span>
+      <span><b>Saves as you go</b> in this browser</span>
+    </div>
+    <div class="notice"><b>No passwords, keys or account numbers.</b> We never need them in this form. Service account passwords are typed in by your IT team on install day.</div>
+    <div class="resume" id="resume" hidden>
+      <p id="resume-text">You have a saved draft in this browser.</p>
+      <button type="button" class="btn" id="resume-btn">Pick up where you left off</button>
+      <button type="button" class="btn btn-quiet" id="reset-btn">Start over</button>
+    </div>
+    <div><button type="button" class="btn" id="start-btn">Start the survey</button></div>
+  </section>
+
+  <form id="survey" novalidate hidden>
+    <div id="sections"></div>
+    <div class="hp" aria-hidden="true"><label for="q-website">Website<input id="q-website" name="website" tabindex="-1" autocomplete="off"></label></div>
+    <p class="err" id="send-error" role="alert" hidden>Your survey wasn't sent. Your answers are still saved in this browser. Please try again, or email support@digitaledje.com.</p>
+    <div class="nav-row">
+      <button type="button" class="btn btn-outline" id="prev-btn">Back</button>
+      <div class="right">
+        <span class="saved" id="saved" aria-live="polite"></span>
+        <button type="button" class="btn" id="next-btn">Next section</button>
+      </div>
+    </div>
+  </form>
+
+  <section class="done-card" id="done" hidden>
+    <p class="kicker">Survey complete</p>
+    <h2 id="done-title">Thanks. Your answers are ready to send.</h2>
+    <p class="notice" id="done-note"><b>Preview only.</b> This form isn't connected yet, so nothing was sent. On the live site you get your answers to copy and email to Digital EDJE until the form is connected, and we follow up within one business day with any open items before install day.</p>
+    <div class="summary" id="summary"></div>
+    <div class="email-box" id="email-box" hidden>
+      <textarea id="answers-text" readonly rows="10" aria-label="Your survey answers"></textarea>
+      <div class="email-actions"><button type="button" class="btn" id="copy-answers">Copy answers</button><a class="btn btn-outline" id="mail-link" href="#">Open email</a></div>
+    </div>
+    <div><button type="button" class="btn btn-outline" id="edit-btn">Review my answers</button></div>
+  </section>
+</main>
+
+<footer><div class="wrap">© 2026 Digital EDJE LLC · support@digitaledje.com</div></footer>
+
+<script id="fields-data" type="application/json">{"form_id": "qe-agent-pre-install-survey", "title": "EDJE QE Agent Pre-Install Survey", "version": "2026-11-04b", "description": "Help us plan a smooth install of the QE Agent appliance on your network. Fields marked required must be answered before we schedule install day.", "notes_for_builder": ["Field types: text, textarea, email, tel, number, radio (one choice), select (one choice, dropdown), checkbox_group (many choices), checkbox (single tick).", "required: true means the form can't be submitted without it. priority is Must, Nice or Info, and can be shown as a badge.", "show_if: show the field only when the named field equals the value, or one of the listed values (for checkbox_group, when any listed option is ticked). A hidden field is never required.", "Options named Other should reveal a short text box for the detail.", "Never collect passwords, API keys or account numbers in this form.", "Send each submission to Digital EDJE (support@digitaledje.com or your form backend), keyed by company_name and respondent_email."], "sections": [{"id": "about", "title": "About you", "intro": "Tell us who is filling in this form so we can follow up.", "fields": [{"id": "company_name", "label": "Company name", "type": "text", "required": true, "priority": "Must"}, {"id": "site_location", "label": "Site location (city, state)", "type": "text", "required": true, "priority": "Must"}, {"id": "respondent_name", "label": "Your name", "type": "text", "required": true, "priority": "Must"}, {"id": "respondent_role", "label": "Your role", "type": "select", "required": true, "priority": "Must", "options": ["IT / network", "Quality / QMS owner", "Security / compliance", "Operations or management", "Other"]}, {"id": "respondent_email", "label": "Work email", "type": "email", "required": true, "priority": "Must"}, {"id": "respondent_phone", "label": "Phone", "type": "tel", "required": false, "priority": "Nice"}, {"id": "certifications", "label": "Quality certifications held", "type": "checkbox_group", "required": true, "priority": "Must", "options": ["AS9100", "ISO 9001", "IATF 16949", "ISO 13485", "Nadcap (special processes)", "Other"]}]}, {"id": "A", "title": "A. Contacts, scheduling and change management", "fields": [{"id": "a1_it_contact", "label": "IT contact for the install (name, email, phone)", "type": "textarea", "required": true, "priority": "Must"}, {"id": "a2_qms_owner", "label": "QMS document owner who can confirm which folders the agent may read (name, email)", "type": "textarea", "required": true, "priority": "Must"}, {"id": "a3_sponsor", "label": "Executive sponsor or quality manager signing off on the pilot (name, email)", "type": "textarea", "required": true, "priority": "Must"}, {"id": "a4_change_ticket", "label": "Does IT need a change request before a new device joins the network?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure"]}, {"id": "a4_change_details", "label": "Change request lead time and approver", "type": "text", "required": true, "priority": "Must", "show_if": {"a4_change_ticket": "Yes"}}, {"id": "a5_security_review", "label": "Is there a vendor or new-software security review?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure"]}, {"id": "a5_security_details", "label": "Who runs the review and how long it usually takes", "type": "text", "required": true, "priority": "Must", "show_if": {"a5_security_review": "Yes"}}, {"id": "a6_paperwork", "label": "Paperwork needed before we come on site", "type": "checkbox_group", "required": true, "priority": "Must", "options": ["NDA", "Vendor onboarding form", "Insurance certificate", "None", "Other"]}, {"id": "a7_install_window", "label": "Days and hours we can install, and any maintenance window", "type": "textarea", "required": true, "priority": "Must"}, {"id": "a8_site_rules", "label": "Site visitor rules", "type": "checkbox_group", "required": true, "priority": "Must", "options": ["Escort required", "Badge", "Citizenship or ID check", "Safety training", "Laptop restrictions", "Phone restrictions", "None"]}, {"id": "a8_site_rules_notes", "label": "Anything else about site access", "type": "textarea", "required": false, "priority": "Nice"}, {"id": "a9_admin", "label": "Who will administer the agent after install (creates users, turns on support sessions)? Name and email", "type": "textarea", "required": true, "priority": "Must"}, {"id": "a10_training", "label": "Who should attend the 60 minute handover training?", "type": "textarea", "required": false, "priority": "Nice"}]}, {"id": "B", "title": "B. Physical placement, power and device approval", "intro": "The Mac mini is about 5 x 5 x 2 inches, uses less power than a typical desktop PC and runs silently. It stays Digital EDJE property under the subscription.", "fields": [{"id": "b1_macos_allowed", "label": "Are Apple (macOS) devices allowed on your network?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No, but an exception is possible", "No", "Not sure"]}, {"id": "b1_exception_owner", "label": "Who can approve an exception?", "type": "text", "required": true, "priority": "Must", "show_if": {"b1_macos_allowed": "No, but an exception is possible"}}, {"id": "b2_location", "label": "Where will the appliance sit?", "type": "select", "required": true, "priority": "Must", "options": ["Server room", "IT closet", "Quality office", "Other"]}, {"id": "b2_access_controlled", "label": "Is that area access-controlled?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure"]}, {"id": "b3_power", "label": "Is there a free power outlet on a UPS or backed-up circuit?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes, on a UPS", "Outlet available, no UPS", "No outlet yet", "Not sure"]}, {"id": "b4_rack", "label": "If it goes in a rack, who supplies a shelf or tray?", "type": "select", "required": false, "priority": "Nice", "options": ["Not going in a rack", "We supply it", "Digital EDJE supplies it", "Not sure"]}, {"id": "b5_device_requirements", "label": "What does IT require for a new device?", "type": "checkbox_group", "required": true, "priority": "Must", "options": ["Asset tag", "Register serial number", "Register MAC address", "Install our antivirus / EDR", "Enroll in our device management", "None"]}, {"id": "b6_endpoint_macos", "label": "If you require endpoint software, is there a macOS version?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure", "We don't require endpoint software"]}, {"id": "b6_endpoint_name", "label": "Name of the endpoint software", "type": "text", "required": false, "priority": "Nice"}, {"id": "b7_peripherals", "label": "Is a monitor, keyboard and mouse available at the install spot?", "type": "radio", "required": false, "priority": "Nice", "options": ["Yes", "No, please bring them"]}, {"id": "b8_usb", "label": "Are USB drives allowed in the building?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Only approved or scanned drives"]}, {"id": "b8_file_transfer", "label": "If not, how do you move approved files onto a device?", "type": "textarea", "required": true, "priority": "Must", "show_if": {"b8_usb": ["No", "Only approved or scanned drives"]}}, {"id": "b9_mac_password_keeper", "label": "Who should keep the Mac's macOS login password after install, and where is it stored?", "type": "text", "required": true, "priority": "Must"}, {"id": "b10_vendor_equipment", "label": "Do your asset rules allow vendor-owned equipment on your network?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure"]}, {"id": "b10_loan_agreement", "label": "Do you need an equipment loan agreement or a vendor asset tag?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure"]}]}, {"id": "C", "title": "C. Network", "intro": "The appliance needs one wired connection. Users open it in a browser on port 8800. The app makes no outbound connections, and the AI model is pre-loaded before it arrives.", "fields": [{"id": "c1_ethernet", "label": "Can you provide a wired Ethernet port at the install spot?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure"]}, {"id": "c2_vlan", "label": "Which network or VLAN should it join?", "type": "text", "required": true, "priority": "Must"}, {"id": "c3_ip_method", "label": "IP assignment", "type": "radio", "required": true, "priority": "Must", "options": ["Static IP", "DHCP reservation", "Not decided"]}, {"id": "c3_ip_details", "label": "IP address, subnet mask, gateway and DNS servers (can be sent later)", "type": "textarea", "required": true, "priority": "Must", "help": "Send these before install day if not known yet."}, {"id": "c4_dns_name", "label": "Internal DNS name you'll create for it (optional)", "type": "text", "required": false, "priority": "Nice", "placeholder": "qeagent.yourcompany.local"}, {"id": "c5_user_access", "label": "Can users' computers reach the appliance on TCP port 8800?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure"]}, {"id": "c5_allowed_subnets", "label": "Which subnets or user groups should be allowed?", "type": "textarea", "required": true, "priority": "Must"}, {"id": "c6_fileserver_access", "label": "Can the appliance reach the document file server on SMB (TCP 445) or NFS (TCP 2049)?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure"]}, {"id": "c7_internet", "label": "What kind of network is this?", "type": "radio", "required": true, "priority": "Must", "options": ["Connected to the internet", "Restricted, no internet", "Fully air-gapped"]}, {"id": "c8_block_outbound", "label": "Do you want the appliance's outbound traffic blocked at the firewall after setup? (It keeps working.)", "type": "radio", "required": false, "priority": "Nice", "options": ["Yes", "No", "Not applicable"]}, {"id": "c9_proxy", "label": "Must devices use a web proxy or SSL inspection?", "type": "radio", "required": false, "priority": "Nice", "options": ["Yes", "No", "Not sure"]}, {"id": "c10_nac", "label": "Does your network require 802.1X / NAC port authentication or MAC registration?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure"]}, {"id": "c11_vendor_vpn", "label": "Do vendors use a VPN or remote access path today?", "type": "radio", "required": false, "priority": "Nice", "options": ["Yes", "No", "Not sure"]}, {"id": "c12_https_required", "label": "Do you require HTTPS for internal web apps?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure"], "help": "Version 0.2 serves plain HTTP inside your network. If HTTPS is required, the pilot runs on the Mac mini itself until the HTTPS release."}]}, {"id": "D", "title": "D. Where your QMS documents live", "intro": "The agent reads procedures in place from a network folder through a read-only account. Nothing is uploaded to us, and your files are never changed or moved.", "fields": [{"id": "d1_doc_location", "label": "Where are your controlled QMS documents stored today?", "type": "checkbox_group", "required": true, "priority": "Must", "options": ["Windows file share", "NAS", "SharePoint / OneDrive", "MasterControl", "ETQ", "Intelex", "Qualio", "Other eQMS", "Paper or other"]}, {"id": "d2_share_path", "label": "Server name and folder path", "type": "text", "required": true, "priority": "Must", "placeholder": "\\\\fileserver\\QMS\\Procedures", "show_if": {"d1_doc_location": ["Windows file share", "NAS"]}}, {"id": "d3_protocol", "label": "Share protocol", "type": "radio", "required": true, "priority": "Must", "options": ["SMB (Windows share)", "NFS", "Not sure"]}, {"id": "d3_smb_signing", "label": "Is SMB signing or encryption required?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure"], "show_if": {"d3_protocol": "SMB (Windows share)"}}, {"id": "d4_service_account", "label": "Can IT create a read-only service account limited to the QMS folders?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure"]}, {"id": "d5_password_expiry", "label": "Does that service account's password expire?", "type": "radio", "required": true, "priority": "Must", "options": ["Never expires", "Expires", "Not sure"]}, {"id": "d5_password_owner", "label": "Who will update the password on the appliance when it changes?", "type": "text", "required": true, "priority": "Must", "show_if": {"d5_password_expiry": "Expires"}}, {"id": "d6_in_scope", "label": "Folders in scope", "type": "checkbox_group", "required": true, "priority": "Must", "options": ["Quality manual", "SOPs / procedures", "Work instructions", "Forms", "Audit reports", "NCR / CAPA logs", "Other"]}, {"id": "d6_out_of_scope", "label": "Folders that must stay out of scope", "type": "textarea", "required": true, "priority": "Must"}, {"id": "d7_controlled_separate", "label": "Are released (controlled) documents kept separate from drafts and obsolete copies?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure"]}, {"id": "d8_file_count", "label": "Approximate number of files in scope", "type": "number", "required": true, "priority": "Must", "help": "Current limit: 5,000 files per source."}, {"id": "d8_size_gb", "label": "Approximate total size (GB)", "type": "number", "required": true, "priority": "Must", "help": "Current limit: 50 MB per file."}, {"id": "d9_formats", "label": "File formats in scope", "type": "checkbox_group", "required": true, "priority": "Must", "options": ["Word (.docx)", "PDF (text)", "PDF (scanned images)", "Excel", "Text", "CSV", "Other"], "help": "Scanned PDFs can't be read yet; Excel workbooks need saving as CSV."}, {"id": "d10_restricted", "label": "Are any of these folders restricted to certain people?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure"], "help": "Everyone who signs in to the agent can search every connected folder, so connect only folders all agent users may see."}, {"id": "d11_itar_registered", "label": "Is your company ITAR-registered, or does it handle EAR-controlled items?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure"], "help": "ITAR-registered companies are welcome. The agent is for quality system documents (manual, procedures, forms, records), and export-controlled technical data stays out of scope."}, {"id": "d11_eco_contact", "label": "Export compliance officer (name, email)", "type": "textarea", "required": true, "priority": "Must", "show_if": {"d11_itar_registered": ["Yes", "Not sure"]}, "help": "They choose which folders get connected."}, {"id": "d11_eco_confirms", "label": "Will your export compliance officer confirm in writing that the connected folders hold no export-controlled technical data (drawings, specs, models, process data for controlled items)?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure"], "show_if": {"d11_itar_registered": ["Yes", "Not sure"]}}, {"id": "d11_customer_proprietary", "label": "Do the folders you plan to connect hold customer-owned proprietary data, such as customer drawings or specs?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure"], "help": "That data stays out too unless your contracts allow it."}, {"id": "d12_sync_possible", "label": "If documents are in SharePoint or an eQMS, can a library be synced or exported on a schedule to a folder the Mac mini can read?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure"], "show_if": {"d1_doc_location": ["SharePoint / OneDrive", "MasterControl", "ETQ", "Intelex", "Qualio", "Other eQMS"]}}, {"id": "d13_change_frequency", "label": "How often do procedures change?", "type": "select", "required": false, "priority": "Nice", "options": ["Daily", "Weekly", "Monthly", "Rarely"]}, {"id": "d14_records", "label": "Do you also want to load records such as an NCR log or audit findings as CSV exports?", "type": "radio", "required": false, "priority": "Nice", "options": ["Yes", "No", "Not sure"]}]}, {"id": "E", "title": "E. Users, roles and sign-in", "intro": "Each person gets their own login on the appliance. Accounts are local to the device today.", "fields": [{"id": "e1_user_count", "label": "How many people will use the agent in the first 90 days?", "type": "number", "required": true, "priority": "Must"}, {"id": "e2_admins", "label": "Who needs the administrator role? We suggest two people (names, emails).", "type": "textarea", "required": true, "priority": "Must"}, {"id": "e3_local_accounts_ok", "label": "Are local accounts acceptable for the pilot? (10+ character passwords, lockout after 5 failed tries, 12 hour sessions)", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure"]}, {"id": "e4_sso_mfa_required", "label": "Do you require single sign-on or multi-factor authentication for internal apps?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure"], "help": "Not in v0.2. If required, we plan a single-user or on-device pilot first."}, {"id": "e5_password_policy", "label": "Password policy we should match (length, rotation)", "type": "textarea", "required": false, "priority": "Nice"}, {"id": "e6_vpn_users", "label": "Will anyone use it from outside the building over VPN?", "type": "radio", "required": false, "priority": "Nice", "options": ["Yes", "No", "Not sure"]}, {"id": "e7_joiners_leavers", "label": "How should users be added and removed when people join or leave?", "type": "text", "required": false, "priority": "Nice"}]}, {"id": "F", "title": "F. Security and compliance approvals", "intro": "These help your security team review the appliance. Items marked for information are optional.", "fields": [{"id": "f1_security_pack", "label": "Should we send our security summary and architecture diagram before your review?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No"]}, {"id": "f2_cui", "label": "Do you handle CUI or follow NIST SP 800-171 / CMMC? If yes, will the appliance be inside or outside your CUI boundary?", "type": "select", "required": false, "priority": "Info", "options": ["No CUI", "CUI, appliance outside the boundary", "CUI, appliance inside the boundary", "Not sure", "Prefer not to say"]}, {"id": "f3_fde_required", "label": "Is full-disk encryption required? (We turn on macOS FileVault at install.)", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure"]}, {"id": "f3_recovery_key_holder", "label": "Who should hold the FileVault recovery key?", "type": "text", "required": true, "priority": "Must"}, {"id": "f4_log_review", "label": "Do you need activity logs exported or reviewed?", "type": "radio", "required": false, "priority": "Nice", "options": ["Yes", "No", "Not sure"]}, {"id": "f5_updates", "label": "How should macOS and app updates be delivered?", "type": "radio", "required": true, "priority": "Must", "options": ["By Digital EDJE on site", "By Digital EDJE in a support session", "By our IT from an offline package"]}, {"id": "f6_vendor_software_rules", "label": "Rules for software from outside vendors (code review, approved list, signed installers)", "type": "textarea", "required": true, "priority": "Must"}, {"id": "f7_retention", "label": "How long should chats, reports and the search index be kept?", "type": "text", "required": false, "priority": "Nice"}, {"id": "f8_end_of_contract", "label": "At contract end we erase the Mac mini on site with you watching, then take it back. Is that acceptable?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No, no device that held our data may leave (buyout needed)", "Not sure"]}, {"id": "f9_hardware_swap", "label": "If the Mac mini fails we swap it for a pre-loaded spare. Any rules we must follow for that swap?", "type": "textarea", "required": true, "priority": "Must"}, {"id": "f10_ai_policy", "label": "Do you have a list of approved or banned AI tools? Who decides on new ones?", "type": "textarea", "required": false, "priority": "Info"}]}, {"id": "G", "title": "G. Updates, licensing and remote support", "intro": "The license runs for your subscription term and is checked on the device. Remote support is off unless your administrator turns it on for 1 to 8 hours.", "fields": [{"id": "g1_remote_allowed", "label": "Are vendor remote support sessions allowed?", "type": "radio", "required": true, "priority": "Must", "options": ["Yes", "No", "Not sure"]}, {"id": "g2_remote_tool", "label": "Which tool do you use with vendors?", "type": "checkbox_group", "required": true, "priority": "Must", "options": ["Teams screen share", "Zoom screen share", "Vendor VPN", "Jump host", "Other"], "show_if": {"g1_remote_allowed": "Yes"}}, {"id": "g3_session_approver", "label": "Who must approve and be present during a support session?", "type": "text", "required": true, "priority": "Must", "show_if": {"g1_remote_allowed": "Yes"}}, {"id": "g4_onsite_notice", "label": "If remote support isn't allowed, is an on-site visit acceptable, and with how much notice?", "type": "text", "required": true, "priority": "Must", "show_if": {"g1_remote_allowed": ["No", "Not sure"]}}, {"id": "g5_license_installer", "label": "Who will install license renewals each term?", "type": "radio", "required": false, "priority": "Nice", "options": ["Our administrator", "Digital EDJE during a visit or session"]}, {"id": "g6_file_delivery", "label": "How should we send license and update files?", "type": "radio", "required": true, "priority": "Must", "options": ["Email", "Our secure file transfer", "USB in person"]}, {"id": "g7_patch_window", "label": "Patch window for macOS updates on appliances", "type": "text", "required": false, "priority": "Nice"}, {"id": "g8_diagnostics", "label": "Would you share the diagnostics file when something breaks? (Version, settings and counts only.)", "type": "radio", "required": false, "priority": "Nice", "options": ["Yes", "No", "Not sure"]}]}, {"id": "submit", "title": "Before you send", "fields": [{"id": "notes", "label": "Anything else we should know?", "type": "textarea", "required": false, "priority": "Nice"}, {"id": "confirm_no_secrets", "label": "I haven't entered any passwords or other secrets in this form.", "type": "checkbox", "required": true, "priority": "Must", "help": "We never need passwords here. Service account passwords are typed in on install day by your IT."}]}]}</script>
+<script>
+(function(){
+  var FORM = JSON.parse(document.getElementById('fields-data').textContent);
+  var KEY = 'edje-survey-' + FORM.form_id + '-' + FORM.version;
+  var sections = FORM.sections;
+  var state = {};
+  var cur = 0;
+  // Form handler address (Google Apps Script web app). Empty means preview mode: nothing is sent.
+  var FORM_ENDPOINT = '/*__ENDPOINT__*/';
+  if (FORM_ENDPOINT.indexOf('/*') === 0) FORM_ENDPOINT = '';
+  // 'email' on the live site until the form handler is connected: answers are shown to copy and email.
+  var SEND_MODE = 'email';
+  var loadedAt = Date.now();
+
+  function store(){ try { localStorage.setItem(KEY, JSON.stringify({answers: state, section: cur, at: Date.now()})); return true; } catch(e){ return false; } }
+  function load(){ try { var raw = localStorage.getItem(KEY); return raw ? JSON.parse(raw) : null; } catch(e){ return null; } }
+  function clear(){ try { localStorage.removeItem(KEY); } catch(e){} }
+
+  document.getElementById('form-title').textContent = FORM.title.replace(/^EDJE /,'');
+  document.getElementById('form-desc').textContent = FORM.description;
+  var totalQ = sections.reduce(function(n,s){ return n + s.fields.length; }, 0);
+  document.getElementById('fact-q').textContent = totalQ;
+  document.getElementById('fact-s').textContent = sections.length;
+
+  function isOther(o){ return /^other\b/i.test(o); }
+  function esc(t){ var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+
+  // Build sections
+  var host = document.getElementById('sections');
+  sections.forEach(function(s, si){
+    var card = document.createElement('fieldset');
+    card.className = 'section-card'; card.dataset.index = si; card.hidden = true;
+    card.style.border = '0'; card.style.margin = '0';
+    var top = '<div class="sec-top"><p class="kicker">Section ' + (si+1) + ' of ' + sections.length + '</p><h2>' + esc(s.title) + '</h2>' + (s.intro ? '<p>' + esc(s.intro) + '</p>' : '') + '</div>';
+    card.innerHTML = top;
+    s.fields.forEach(function(q){ card.appendChild(buildField(q)); });
+    host.appendChild(card);
+  });
+
+  function buildField(q){
+    var wrap = document.createElement('div');
+    wrap.className = 'field'; wrap.dataset.id = q.id;
+    var pr = q.priority || '';
+    var badge = pr ? '<span class="badge ' + (q.required ? 'must' : '') + '">' + (q.required ? 'Required' : (pr === 'Info' ? 'For information' : 'Optional')) + '</span>' : '';
+    var labelFor = (q.type === 'radio' || q.type === 'checkbox_group') ? '' : ' for="q-' + q.id + '"';
+    var html = '';
+    if (q.type !== 'checkbox') html += '<label class="qlabel" id="l-' + q.id + '"' + labelFor + '>' + esc(q.label) + badge + '</label>';
+    if (q.help) html += '<p class="help">' + esc(q.help) + '</p>';
+    var ph = q.placeholder ? ' placeholder="' + esc(q.placeholder) + '"' : '';
+    switch(q.type){
+      case 'textarea': html += '<textarea id="q-' + q.id + '" name="' + q.id + '"' + ph + '></textarea>'; break;
+      case 'select':
+        html += '<select id="q-' + q.id + '" name="' + q.id + '"><option value="">Choose one</option>' + q.options.map(function(o){ return '<option>' + esc(o) + '</option>'; }).join('') + '</select>'; break;
+      case 'radio': case 'checkbox_group':
+        var t = q.type === 'radio' ? 'radio' : 'checkbox';
+        html += '<div class="opts" role="' + (t === 'radio' ? 'radiogroup' : 'group') + '" aria-labelledby="l-' + q.id + '">' + q.options.map(function(o, i){
+          return '<label class="opt" for="q-' + q.id + '-' + i + '"><input type="' + t + '" id="q-' + q.id + '-' + i + '" name="' + q.id + '" value="' + esc(o) + '"><span>' + esc(o) + '</span></label>';
+        }).join('') + '</div>'; break;
+      case 'checkbox':
+        html += '<label class="opt" for="q-' + q.id + '"><input type="checkbox" id="q-' + q.id + '" name="' + q.id + '" value="yes"><span><b>' + esc(q.label) + '</b></span></label>'; break;
+      case 'number': html += '<input type="number" min="0" inputmode="numeric" id="q-' + q.id + '" name="' + q.id + '"' + ph + '>'; break;
+      default: html += '<input type="' + (q.type === 'email' ? 'email' : q.type === 'tel' ? 'tel' : 'text') + '" id="q-' + q.id + '" name="' + q.id + '"' + ph + (q.type === 'email' ? ' autocomplete="email"' : q.type === 'tel' ? ' autocomplete="tel"' : '') + '>';
+    }
+    if (q.options && q.options.some(isOther)) html += '<input type="text" class="other-box" id="q-' + q.id + '__other" name="' + q.id + '__other" placeholder="Tell us more" hidden>';
+    html += '<p class="err" hidden>Please answer this question.</p>';
+    wrap.innerHTML = html;
+    return wrap;
+  }
+
+  var allFields = [];
+  sections.forEach(function(s, si){ s.fields.forEach(function(q){ allFields.push({q:q, si:si}); }); });
+
+  function valueOf(q){
+    var form = document.getElementById('survey');
+    if (q.type === 'checkbox_group') return Array.prototype.map.call(form.querySelectorAll('input[name="' + q.id + '"]:checked'), function(i){ return i.value; });
+    if (q.type === 'radio'){ var c = form.querySelector('input[name="' + q.id + '"]:checked'); return c ? c.value : ''; }
+    if (q.type === 'checkbox'){ return document.getElementById('q-' + q.id).checked ? 'yes' : ''; }
+    return document.getElementById('q-' + q.id).value.trim();
+  }
+  function setValue(q, v){
+    if (v == null) return;
+    var form = document.getElementById('survey');
+    if (q.type === 'checkbox_group'){ form.querySelectorAll('input[name="' + q.id + '"]').forEach(function(i){ i.checked = Array.isArray(v) && v.indexOf(i.value) > -1; }); }
+    else if (q.type === 'radio'){ form.querySelectorAll('input[name="' + q.id + '"]').forEach(function(i){ i.checked = i.value === v; }); }
+    else if (q.type === 'checkbox'){ document.getElementById('q-' + q.id).checked = v === 'yes'; }
+    else { document.getElementById('q-' + q.id).value = v; }
+  }
+  function visible(q){
+    if (!q.show_if) return true;
+    return Object.keys(q.show_if).every(function(dep){
+      var want = q.show_if[dep]; want = Array.isArray(want) ? want : [want];
+      var depQ = allFields.filter(function(f){ return f.q.id === dep; })[0];
+      if (!depQ) return true;
+      var have = valueOf(depQ.q);
+      if (Array.isArray(have)) return have.some(function(h){ return want.indexOf(h) > -1; });
+      return want.indexOf(have) > -1;
+    });
+  }
+  function answered(q){ var v = valueOf(q); return Array.isArray(v) ? v.length > 0 : v !== ''; }
+
+  function refresh(){
+    allFields.forEach(function(f){
+      var el = document.querySelector('.field[data-id="' + f.q.id + '"]');
+      el.hidden = !visible(f.q);
+      var other = document.getElementById('q-' + f.q.id + '__other');
+      if (other){ var v = valueOf(f.q); var on = Array.isArray(v) ? v.some(isOther) : isOther(v || ''); other.hidden = !on; }
+    });
+    // progress
+    var req = allFields.filter(function(f){ return f.q.required && visible(f.q); });
+    var done = req.filter(function(f){ return answered(f.q); }).length;
+    document.getElementById('prog-count').textContent = done + ' of ' + req.length + ' required answered';
+    document.getElementById('prog-section').textContent = 'Section ' + (cur+1) + ' of ' + sections.length + ': ' + sections[cur].title.replace(/^[A-G]\.\s*/,'');
+    var dots = document.getElementById('dots').children;
+    for (var i = 0; i < dots.length; i++){
+      var sreq = req.filter(function(f){ return f.si === i; });
+      var sdone = sreq.length && sreq.every(function(f){ return answered(f.q); });
+      dots[i].className = (i === cur ? 'current' : (sdone ? 'done' : ''));
+      dots[i].setAttribute('aria-current', i === cur ? 'step' : 'false');
+    }
+  }
+
+  // dots
+  sections.forEach(function(s, i){
+    var b = document.createElement('button'); b.type = 'button';
+    b.setAttribute('aria-label', 'Go to section ' + (i+1) + ': ' + s.title);
+    b.addEventListener('click', function(){ show(i); });
+    document.getElementById('dots').appendChild(b);
+  });
+
+  function collect(){
+    var out = {};
+    allFields.forEach(function(f){
+      out[f.q.id] = valueOf(f.q);
+      var o = document.getElementById('q-' + f.q.id + '__other'); if (o && o.value.trim()) out[f.q.id + '__other'] = o.value.trim();
+    });
+    return out;
+  }
+  var saveTimer;
+  function autosave(){
+    state = collect();
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function(){ document.getElementById('saved').textContent = store() ? 'Saved in this browser' : ''; }, 300);
+    refresh();
+  }
+
+  function show(i){
+    cur = Math.max(0, Math.min(sections.length - 1, i));
+    document.querySelectorAll('.section-card').forEach(function(c){ c.hidden = +c.dataset.index !== cur; });
+    document.getElementById('prev-btn').style.visibility = cur === 0 ? 'hidden' : 'visible';
+    document.getElementById('next-btn').textContent = cur === sections.length - 1 ? 'Finish survey' : 'Next section';
+    refresh(); store();
+    window.scrollTo(0, 0);
+  }
+
+  function validate(si){
+    var bad = null;
+    sections[si].fields.forEach(function(q){
+      var el = document.querySelector('.field[data-id="' + q.id + '"]');
+      var miss = q.required && visible(q) && !answered(q);
+      el.classList.toggle('invalid', miss);
+      el.querySelector('.err').hidden = !miss;
+      if (miss && !bad) bad = el;
+    });
+    if (bad){ var inp = bad.querySelector('input, select, textarea'); bad.scrollIntoView({block:'center'}); if (inp) inp.focus({preventScroll:true}); }
+    return !bad;
+  }
+
+  var form = document.getElementById('survey');
+  form.addEventListener('input', autosave);
+  form.addEventListener('change', autosave);
+
+  document.getElementById('next-btn').addEventListener('click', function(){
+    if (!validate(cur)) return;
+    if (cur < sections.length - 1) show(cur + 1); else finish();
+  });
+  document.getElementById('prev-btn').addEventListener('click', function(){ show(cur - 1); });
+
+  function begin(saved){
+    document.getElementById('intro').hidden = true;
+    form.hidden = false; document.getElementById('progress').hidden = false; document.getElementById('done').hidden = true;
+    if (saved){ allFields.forEach(function(f){ setValue(f.q, saved.answers[f.q.id]); var o = document.getElementById('q-' + f.q.id + '__other'); if (o) o.value = saved.answers[f.q.id + '__other'] || ''; }); state = saved.answers; }
+    show(saved ? (saved.section || 0) : 0);
+  }
+  function finish(){
+    for (var i = 0; i < sections.length; i++){ if (!validate(i)){ show(i); validate(i); return; } }
+    state = collect(); store();
+    if (!FORM_ENDPOINT){ showDone(false); if (SEND_MODE === 'email') showEmail(); return; }
+    var data = {};
+    allFields.forEach(function(f){
+      if (!visible(f.q)) return;
+      data[f.q.id] = state[f.q.id];
+      if (state[f.q.id + '__other']) data[f.q.id + '__other'] = state[f.q.id + '__other'];
+    });
+    var btn = document.getElementById('next-btn'), msg = document.getElementById('send-error');
+    btn.disabled = true; btn.textContent = 'Sending...'; msg.hidden = true;
+    fetch(FORM_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ form: 'survey', page: location.pathname, elapsed: Date.now() - loadedAt, website: document.getElementById('q-website').value, data: data }) })
+      .then(function(r){ return r.json(); })
+      .then(function(res){ if (!res || !res.ok) throw new Error('failed'); clear(); showDone(true); })
+      .catch(function(){ msg.hidden = false; })
+      .then(function(){ btn.disabled = false; btn.textContent = 'Finish survey'; });
+  }
+  function showDone(sent){
+    if (sent){
+      document.getElementById('done-title').textContent = 'Thanks. Your survey is in.';
+      document.getElementById('done-note').innerHTML = 'Your answers went to Digital EDJE. We will follow up within one business day with any open items before install day.';
+    }
+    form.hidden = true; document.getElementById('progress').hidden = true; document.getElementById('done').hidden = false;
+    var s = document.getElementById('summary');
+    s.innerHTML = '';
+    [['Company', state.company_name], ['Site', state.site_location], ['Filled in by', state.respondent_name + (state.respondent_email ? ' · ' + state.respondent_email : '')],
+     ['Network', state.c7_internet], ['Documents in', (state.d1_doc_location || []).join(', ')], ['Users', state.e1_user_count]].forEach(function(r){
+      if (r[1]){ var p = document.createElement('p'); p.innerHTML = '<b style="color:var(--fg)">' + esc(r[0]) + ':</b> ' + esc(String(r[1])); s.appendChild(p); }
+    });
+    window.scrollTo(0, 0);
+  }
+  function answersText(){
+    var lines = [FORM.title + ' (version ' + FORM.version + ')', ''];
+    sections.forEach(function(s){
+      var block = [];
+      s.fields.forEach(function(q){
+        if (!visible(q)) return;
+        var v = state[q.id];
+        if (Array.isArray(v)) v = v.join(', ');
+        if (!v) return;
+        if (state[q.id + '__other']) v += ' (' + state[q.id + '__other'] + ')';
+        block.push(q.label + ': ' + v);
+      });
+      if (block.length) lines.push('== ' + s.title + ' ==', block.join('\n'), '');
+    });
+    return lines.join('\n');
+  }
+  function showEmail(){
+    document.getElementById('done-title').textContent = 'Almost done. Email your answers to us.';
+    document.getElementById('done-note').innerHTML = 'Copy your answers below and email them to <b>support@digitaledje.com</b>. Your answers stay saved in this browser until you clear them. We follow up within one business day with any open items before install day.';
+    document.getElementById('email-box').hidden = false;
+    document.getElementById('answers-text').value = answersText();
+    var subj = 'Pre-install survey: ' + (state.company_name || '');
+    document.getElementById('mail-link').href = 'mailto:support@digitaledje.com?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent('Paste the survey answers here.');
+  }
+  document.getElementById('copy-answers').addEventListener('click', function(){
+    var ta = document.getElementById('answers-text'), b = this;
+    function sel(){ ta.focus(); ta.select(); b.textContent = 'Selected, press Copy'; }
+    try { navigator.clipboard.writeText(ta.value).then(function(){ b.textContent = 'Copied'; }, sel); } catch(e){ sel(); }
+  });
+  document.getElementById('edit-btn').addEventListener('click', function(){ document.getElementById('done').hidden = true; form.hidden = false; document.getElementById('progress').hidden = false; show(0); });
+  document.getElementById('start-btn').addEventListener('click', function(){ begin(null); });
+
+  var saved = load();
+  if (saved && saved.answers && Object.keys(saved.answers).length){
+    document.getElementById('resume').hidden = false;
+    document.getElementById('start-btn').parentNode.hidden = true;
+    var when = new Date(saved.at);
+    document.getElementById('resume-text').textContent = 'You have a saved draft in this browser from ' + when.toLocaleString([], {month:'short', day:'numeric', hour:'numeric', minute:'2-digit'}) + '.';
+    document.getElementById('resume-btn').addEventListener('click', function(){ begin(saved); });
+    document.getElementById('reset-btn').addEventListener('click', function(){ clear(); saved = null; document.getElementById('resume').hidden = true; document.getElementById('start-btn').parentNode.hidden = false; });
+  }
+})();
+</script>
+</body>
+</html>
