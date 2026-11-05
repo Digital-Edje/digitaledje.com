@@ -581,10 +581,10 @@ legend{font-size:.88rem; font-weight:600; padding:0 .4rem}
 <script>
 (function(){
   // Form handler address (Google Apps Script web app). Empty means preview mode: nothing is sent.
-  var FORM_ENDPOINT = '/*__ENDPOINT__*/';
+  var FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwo4biFeuORDzv63enNY_gr9z85GCpPGuqrkYM_bgzi-NWS2zT1h2z3oqTk0eMeGRNsSw/exec';
   if (FORM_ENDPOINT.indexOf('/*') === 0) FORM_ENDPOINT = '';
   // 'email' on the live site until the form handler is connected: opens a filled-in email instead.
-  var SEND_MODE = 'email';
+  var SEND_MODE = 'live';
   var loadedAt = Date.now();
   var form = document.getElementById('lead-form');
   var status = document.getElementById('form-status');

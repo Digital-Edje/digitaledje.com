@@ -175,10 +175,10 @@ footer{border-top:1px solid var(--border); padding-block:1.5rem 2.5rem; font-siz
   var state = {};
   var cur = 0;
   // Form handler address (Google Apps Script web app). Empty means preview mode: nothing is sent.
-  var FORM_ENDPOINT = '/*__ENDPOINT__*/';
+  var FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwo4biFeuORDzv63enNY_gr9z85GCpPGuqrkYM_bgzi-NWS2zT1h2z3oqTk0eMeGRNsSw/exec';
   if (FORM_ENDPOINT.indexOf('/*') === 0) FORM_ENDPOINT = '';
   // 'email' on the live site until the form handler is connected: answers are shown to copy and email.
-  var SEND_MODE = 'email';
+  var SEND_MODE = 'live';
   var loadedAt = Date.now();
 
   function store(){ try { localStorage.setItem(KEY, JSON.stringify({answers: state, section: cur, at: Date.now()})); return true; } catch(e){ return false; } }
